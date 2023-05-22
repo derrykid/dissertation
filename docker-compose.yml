@@ -1,0 +1,24 @@
+version: '3'
+
+services:
+  webApp:
+    image: odds-web-backend
+    hostname: webapp
+    ports:
+      - 8080:8080
+
+  selenium_env:
+    image: selenium/standalone-firefox:112.0
+    hostname: selenium_env
+    depends_on:
+      - webApp
+
+  data_source:
+    image: oddsproducer
+    environment: 
+      - driver_server=selenium_env:4444
+      - consumer_server=http://webApp:8123/data
+    depends_on:
+      - selenium_env
+      - webApp
+    restart: on-failure

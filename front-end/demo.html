@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Line Chart Example</title>
+  <script src="https://cdn.anychart.com/releases/8.10.0/js/anychart-bundle.min.js"></script>
+  <style>
+    #container {
+      width: 600px;
+      height: 400px;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+<div id="container"></div>
+
+<script>
+  // Define the initial chart data
+  var initialData = [
+    {x: 'January', value: 10},
+    {x: 'February', value: 20},
+    {x: 'March', value: 30},
+    {x: 'April', value: 25},
+    {x: 'May', value: 40},
+    {x: 'June', value: 35}
+  ];
+
+  // Create a line chart
+  anychart.onDocumentReady(function() {
+    var chart = anychart.line(initialData);
+
+    // Set chart title
+    chart.title('Line Chart Example');
+
+    // Set chart container
+    chart.container('container');
+
+    // Draw the chart
+    chart.draw();
+
+    // Function to update the chart with new data
+    function updateChart(newData) {
+      chart.data(newData); // Update the chart data
+      chart.draw(); // Redraw the chart
+    }
+
+    // Example usage: update the chart with new data after 3 seconds
+    setTimeout(function() {
+      var newData = [
+        {x: 'July', value: 50},
+        {x: 'August', value: 30},
+        {x: 'September', value: 45}
+      ];
+      updateChart(newData);
+    }, 3000);
+  });
+</script>
+</body>
+</html>
