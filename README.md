@@ -17,3 +17,4 @@
 
 - [SGD regressor](https://scikit-learn.org/stable/modules/generated/sklearn.linear_model.SGDRegressor.html#sklearn.linear_model.SGDRegressor) 
 - [Generalized linear model](https://scikit-learn.org/stable/modules/linear_model.html#generalized-linear-models) 
+a
