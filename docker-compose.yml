@@ -2,7 +2,7 @@ version: '3'
 
 services:
   webApp:
-    image: odds-web-backend
+    image: 128261723812/odds-web-backend
     hostname: webapp
     ports:
       - 8080:8080
@@ -14,7 +14,7 @@ services:
       - webApp
 
   data_source:
-    image: oddsproducer
+    image: 128261723812/oddsproducer:2
     environment: 
       - driver_server=selenium_env:4444
       - consumer_server=http://webApp:8123/data

@@ -1,6 +1,7 @@
 FROM python:3.10
 
 WORKDIR /app
+RUN mkdir /app/data
 COPY requirements.txt .
 COPY *.py .
 

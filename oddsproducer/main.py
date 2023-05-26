@@ -1,23 +1,28 @@
 #! /usr/bin/env python3
 import json
 import time
-
+import datetime
 import requests
+import os
 
 from football import Football
 
 
-def send_web_backend(json_data, consumer_server):
-
+def save_the_data(json_data):
     print("===========================================")
-    print("=== Odds collected, send to consumer ======")
+    print("=== Odds collected, save data        ======")
     print("===========================================")
 
-    r = requests.post(consumer_server, json=json_data)
+    # r = requests.post(json=json_data)
+    os.chdir("/data")
+
+    now = datetime.datetime.now()
+
+    with open(f"{now.year}-{now.month}-{now.day}-{now.hour}-{now.minute}", "w") as file_out:
+        file_out.write(json_data)
 
 
-def main(server_address, consumer_server):
-
+def main(server_address):
     driver = setup_webdriver(server_address)
 
     try:
@@ -29,7 +34,7 @@ def main(server_address, consumer_server):
 
         print(json_data)
 
-        send_web_backend(json_data, consumer_server)
+        save_the_data(json_data)
 
     finally:
         driver.quit()
@@ -54,8 +59,7 @@ if __name__ == '__main__':
     print("===========================================")
 
     webdriver_server = os.getenv("driver_server")
-    consumer_server = os.getenv("consumer_server")
 
     while True:
-        main(webdriver_server, consumer_server)
+        main(webdriver_server)
         time.sleep(30)
