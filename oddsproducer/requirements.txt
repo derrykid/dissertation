@@ -1,2 +1,4 @@
 selenium
+fake-useragent
 requests
+urllib3

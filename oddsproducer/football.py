@@ -27,7 +27,9 @@ class Football:
         self.__webdriver__ = webdriver
 
     def get_match_hyperlink(self) -> set:
+        time.sleep(1)
         self.__webdriver__.get(self.base_address)
+        time.sleep(1)
         match_links = set()
 
         i = 0
@@ -91,37 +93,50 @@ class Football:
         time.sleep(2)
 
         odds_in_page = []
-        try:
             # Now we collect all bookmaker
-            html_div_start_num = 2
-            for j in range(html_div_start_num, 30):  # only first 10 bookmakers displayed
+        html_div_start_num = 2
+        for j in range(html_div_start_num, 30):  # only first 10 bookmakers displayed
+            try:
                 # bookmaker xpath
                 bookmaker = self.__webdriver__.find_element(By.XPATH,
                                                             '/html/body/div[1]/div/div[1]/div/main/div[2]/div[4]/div[1]/div/div[{}]/div[1]/a[2]/p'.format(
                                                                 j)).text
+                print(bookmaker)
 
                 home = self.__webdriver__.find_element(By.XPATH,
                                                        '/html/body/div[1]/div/div[1]/div/main/div[2]/div[4]/div[1]/div/div[{}]/div[2]/div/div/p'.format(
                                                            j)).text
+                print(home)
 
                 # pay attention if it is home, away, draw, the xpath is different
 
                 draw = self.__webdriver__.find_element(By.XPATH,
                                                        '/html/body/div[1]/div/div[1]/div/main/div[2]/div[4]/div[1]/div/div[{}]/div[3]/div/div/p'.format(
                                                            j)).text
+
+                print(draw)
                 away = self.__webdriver__.find_element(By.XPATH,
                                                        '/html/body/div[1]/div/div[1]/div/main/div[2]/div[4]/div[1]/div/div[{}]/div[4]/div/div/p'.format(
                                                            j)).text
+                print(away)
 
                 match = self.__webdriver__.find_element(By.XPATH,
                                                         '/html/body/div[1]/div/div[1]/div/main/div[2]/div[3]/div[1]').text  # match teams
+                print(match)
 
                 date = self.__webdriver__.find_element(By.XPATH,
-                                                       '/html/body/div[1]/div/div[1]/div/main/div[2]/div[3]/div[2]/div[1]/div[2]').text  # Date and time
+                                                       # /html/body/div[1]/div/div[1]/div/main/div[2]/div[3]/div[2]/div[1]
+                                                       # /html/body/div[1]/div/div[1]/div/main/div[2]/div[3]/div[2]/div[1]
+                                                       '/html/body/div[1]/div/div[1]/div/main/div[2]/div[3]/div[2]/div[1]').text  # Date and time
+                print(date)
 
-                book = Bookmaker(sport='football', match=match, bookmaker=bookmaker, home=home, draw=draw, away=away, date=date)
+                book = Bookmaker(sport='football', match=match, bookmaker=bookmaker, home=home, draw=draw, away=away,
+                                 date=date)
+
                 odds_in_page.append(book)
-        except:
-            pass
+            except Exception as e:
+                print(e)
+                pass
 
+        # TODO really pay attention to date time, and how to parse it, the format keeps change
         return odds_in_page

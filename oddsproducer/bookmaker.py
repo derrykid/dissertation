@@ -14,11 +14,9 @@ class Bookmaker:
         self.draw_odd = float(draw)
         self.away_odd = float(away)
 
-        if 'Tomorrow' in date:
-            now = datetime.now().strftime("%A")
-            date = date.replace('Tomorrow', now)
-            
-        dt = datetime.strptime(date, '%A, %d %B %Y, %H:%M')
+        date_parts = ",".join(date.split(",")[1:]).strip()
+
+        dt = datetime.strptime(date_parts, '%d %B %Y,  %H:%M')
         self.match_time = dt.strftime("%Y-%m-%d %H:%M:%S")
 
         try:
@@ -31,3 +29,6 @@ class Bookmaker:
             self.drawProbability = 0
             self.awayProbability = 0
 
+
+    def __str__(self):
+        return self.__dict__

@@ -14,13 +14,13 @@ services:
       - webApp
 
   data_source:
-    image: 128261723812/oddsproducer:2
+    image: 128261723812/oddsproducer:3.4
     environment: 
-      - driver_server=selenium_env:4444
+      - driver_server=http://selenium_env:4444
       - consumer_server=http://webApp:8123/data
     depends_on:
       - selenium_env
       - webApp
     volumes:
-      - ${USER}:/app/data
+      - /home/l00170402/volume:/app/data
     restart: on-failure
