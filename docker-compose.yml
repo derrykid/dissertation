@@ -24,3 +24,11 @@ services:
     volumes:
       - /home/l00170402/volume:/app/data
     restart: on-failure
+
+  model_container:
+    image: 128261723812/odds-model:latest
+    hostname: odd_model
+    depends_on:
+      - webApp
+      - data_source
+    restart: on-failure
