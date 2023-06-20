@@ -46,8 +46,7 @@ public class ModelPredictor {
                 .uri(address)
                 .header("Content-Type", "application/json")
                 .POST(HttpRequest.BodyPublishers.ofString(
-//                        preparedDataForModel.toString()
-                        "Hello"
+                        preparedDataForModel.toString()
                 ))
                 .build();
 

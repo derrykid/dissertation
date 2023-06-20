@@ -40,6 +40,6 @@ public class DataReceiver {
 
         DataConverter.appendOdds(books);
 
-//        modelPredictor.predict(matchSet);
+        modelPredictor.predict(matchSet);
     }
 }
