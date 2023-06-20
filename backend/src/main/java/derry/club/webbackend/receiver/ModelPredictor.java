@@ -38,7 +38,7 @@ public class ModelPredictor {
     }
 
     public void predict(Set<Match> matchSet) {
-        // send request the container, and get result, also update the web by design pattern
+
         logger.info("Requesting model with data {}", matchSet);
 
         HttpRequest request = HttpRequest.newBuilder()
