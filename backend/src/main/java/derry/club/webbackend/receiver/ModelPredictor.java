@@ -30,7 +30,7 @@ public class ModelPredictor {
     public ModelPredictor(@Value("${model.address}") String containerAddress) {
         try {
             logger.info("Container address: {}", containerAddress);
-            this.address = new URI(containerAddress);
+            this.address = new URI(containerAddress + "/predict");
             this.matchPrediction = new HashMap<>();
         } catch (URISyntaxException e) {
             throw new RuntimeException(e);
@@ -40,6 +40,11 @@ public class ModelPredictor {
     public void predict(Set<Match> matchSet) {
 
         logger.info("Requesting model with data {}", matchSet);
+
+        // todo
+        // there are 4 matches, use for loop to make several requests to get the prediction
+        // the prediction will be in numeric format, and the number is the winrate for the home
+        // hence, 4 matches, 4 winrates, print the outcome to the endpoint "predict"
 
         HttpRequest request = HttpRequest.newBuilder()
                 // this uri should be read from docker, env

@@ -5,7 +5,7 @@ services:
     image: 128261723812/odds-web-backend
     hostname: webapp
     ports:
-      - 8080:8080
+      - 8080:8123
 
   selenium_env:
     image: selenium/standalone-firefox:112.0
@@ -14,20 +14,17 @@ services:
       - webApp
 
   data_source:
-    image: 128261723812/oddsproducer:3.4
+    image: 128261723812/oddsproducer:latest
     environment: 
       - driver_server=http://selenium_env:4444
       - consumer_server=http://webApp:8123/data
     depends_on:
       - selenium_env
-      - webApp
-    volumes:
-      - /home/l00170402/volume:/app/data
-    restart: on-failure
+    restart: always
 
   model_container:
     image: 128261723812/odds-model:latest
-    hostname: odd_model
+    hostname: model
     depends_on:
       - webApp
       - data_source

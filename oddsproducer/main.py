@@ -10,17 +10,19 @@ from football import Football
 
 def save_the_data(json_string):
     print("===========================================")
-    print("=== Odds collected, save data        ======")
+    print("=== Odds collected, send data        ======")
     print("===========================================")
 
-    # r = requests.post(json=json_data)
-    os.chdir("/app/data")
+    consumer_server = os.getenv("consumer_server")
+    """
+    the requests library, post method has 2 available arguments: data, json.
+    If use json.dumps and also requests(json=json_data), there will be double escaped
+    
+    Otherwise, simply use data arguments
+    """
 
-    now = datetime.datetime.now()
-    file_name = f"{now.year}-{now.month}-{now.day}-{now.hour}-{now.minute}"
-
-    with open(file_name, "w") as file_out:
-        file_out.write(json_string)
+    headers = {'Content-type': 'application/json'}
+    r = requests.post(consumer_server, data=json_string, headers=headers)
 
     print("Save successfully")
 
@@ -30,11 +32,11 @@ def main(server_address):
     try:
         f = Football(driver)
         links = f.get_match_hyperlink()
+        print(len(links))
         full_books = f.get_books(links)
 
         json_string = json.dumps([obj.__dict__ for obj in full_books])
 
-        # print(json_data)
 
         save_the_data(json_string)
 
@@ -50,7 +52,7 @@ def setup_webdriver(server_address):
     from fake_useragent import UserAgent
 
     options = FirefoxOptions()
-    options.add_argument("--headless")
+    # options.add_argument("--headless")
     options.add_argument('--disable-blink-features=AutomationControlled')
 
     ua = UserAgent()
@@ -70,7 +72,6 @@ if __name__ == '__main__':
     print("========= Program initializing ===========")
     print("===========================================")
 
-    # webdriver_server = "http://localhost:4444"
     webdriver_server = os.getenv("driver_server")
 
     while True:

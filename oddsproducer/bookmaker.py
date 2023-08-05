@@ -14,9 +14,19 @@ class Bookmaker:
         self.draw_odd = float(draw)
         self.away_odd = float(away)
 
+        """
+        date format:
+        
+        Saturday,
+        12 Aug 2023,
+        14:00
+        """
+
+        date = date.replace('\n', '')
+
         date_parts = ",".join(date.split(",")[1:]).strip()
 
-        dt = datetime.strptime(date_parts, '%d %B %Y,  %H:%M')
+        dt = datetime.strptime(date_parts, '%d %b %Y,%H:%M')
         self.match_time = dt.strftime("%Y-%m-%d %H:%M:%S")
 
         try:

@@ -26,8 +26,12 @@ def predict():
         away_elo = data.get("away_elo")
         away_elo = int(away_elo)
 
+        print(data)
         y_hat = model.predict([[home, draw, away, home_elo, away_elo]])
 
+        """
+        return the winrate will be enough, cuz the home team and away team data is in Java container
+        """
         return str(y_hat)
 
     except ValueError as e:

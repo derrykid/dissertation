@@ -45,8 +45,8 @@ class Football:
         # TODO, change back to 100
         for i in range(1, 5):
             # There are 2 forms, the xpath might be like 'target1' or 'target2'
-            xpath1 = '/html/body/div[1]/div/div[1]/div/main/div[2]/div[5]/div[1]/div[{}]/div/div/a'.format(i)
-            xpath2 = '/html/body/div[1]/div/div[1]/div/main/div[2]/div[5]/div[1]/div[{}]/div[2]/div/a'.format(i)
+            xpath1 = '/html/body/div[1]/div/div[1]/div/main/div[2]/div[5]/div[1]/div[{}]/div/div/div[1]/div[2]/div/div/a[1]'.format(i)
+            xpath2 = '/html/body/div[1]/div/div[1]/div/main/div[2]/div[5]/div[1]/div[{}]/div[2]/div/div[1]/div[2]/div/div/a[1]'.format(i)
 
             # only one object contains the data, the other is None
             link_a = self.extract_link_by_xpath(xpath1)
