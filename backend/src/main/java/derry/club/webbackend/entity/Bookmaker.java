@@ -86,6 +86,30 @@ public class Bookmaker {
         return result;
     }
 
+    public void setHomeProbability(float homeProbability) {
+        this.homeProbability = homeProbability;
+    }
+
+    public void setDrawProbability(float drawProbability) {
+        this.drawProbability = drawProbability;
+    }
+
+    public void setAwayProbability(float awayProbability) {
+        this.awayProbability = awayProbability;
+    }
+
+    public float getHomeProbability() {
+        return homeProbability;
+    }
+
+    public float getDrawProbability() {
+        return drawProbability;
+    }
+
+    public float getAwayProbability() {
+        return awayProbability;
+    }
+
     public List<Float> getHistoryHomeOdds() {
         return historyHomeOdds;
     }

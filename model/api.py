@@ -4,7 +4,7 @@ import pickle
 
 app = Flask(__name__)
 
-model = load("model.pkl")
+model = load("regmodel.pkl")
 
 @app.route('/')
 def home():
@@ -15,24 +15,20 @@ def home():
 def predict():
     try:
         data = request.json
-        home = data.get("home")
-        home = int(home)
-        draw = data.get("draw")
-        draw = int(draw)
-        away = data.get("away")
-        away = int(away)
-        home_elo = data.get("home_elo")
-        home_elo = int(home_elo)
-        away_elo = data.get("away_elo")
-        away_elo = int(away_elo)
+        home = data.get("homeProbability")
+        # home = int(home)
+        draw = data.get("drawProbability")
+        # draw = int(draw)
+        away = data.get("awayProbability")
+        # away = int(away)
 
         print(data)
-        y_hat = model.predict([[home, draw, away, home_elo, away_elo]])
+        y_hat = model.predict([[draw, away]])
 
         """
         return the winrate will be enough, cuz the home team and away team data is in Java container
         """
-        return str(y_hat)
+        return str(y_hat[0])
 
     except ValueError as e:
         return str(e)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import derry.club.webbackend.controller.OddsController;
 import derry.club.webbackend.entity.Bookmaker;
 import derry.club.webbackend.entity.Match;
+import derry.club.webbackend.entity.MatchPrediction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,6 +20,7 @@ public class DataReceiver {
     private final Logger logger = LoggerFactory.getLogger(OddsController.class);
     private final ModelPredictor modelPredictor;
     private static Set<Match> matchSet = new HashSet<>();
+    private static Set<MatchPrediction> matchPredictions = new HashSet<>();
 
     public static Set<Match> getMatchSet() {
         return matchSet;
@@ -28,10 +30,14 @@ public class DataReceiver {
         this.modelPredictor = modelPredictor;
     }
 
-    @CrossOrigin(origins = {"http://localhost:63342", "http://frontend"})
-    @PostMapping(path = "/chartData")
+    @GetMapping(path = "/book")
     public Set<Match> chartData() {
         return matchSet.size() != 0 ? matchSet : new HashSet<>();
+    }
+
+    @GetMapping(path = "/predict")
+    public Set<MatchPrediction> prediction() {
+        return matchPredictions;
     }
 
     @PostMapping(path = "/data")
@@ -40,6 +46,6 @@ public class DataReceiver {
 
         DataConverter.appendOdds(books);
 
-        modelPredictor.predict(matchSet);
+        matchPredictions = modelPredictor.predict(matchSet);
     }
 }

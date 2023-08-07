@@ -1,11 +1,19 @@
 package derry.club.webbackend.receiver;
 
 
-import derry.club.webbackend.controller.OddsController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import derry.club.webbackend.entity.Book;
+import derry.club.webbackend.entity.Bookmaker;
 import derry.club.webbackend.entity.Match;
+import derry.club.webbackend.entity.MatchPrediction;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.web.client.RestTemplate;
 
 import java.io.IOException;
 import java.net.URI;
@@ -13,9 +21,7 @@ import java.net.URISyntaxException;
 import java.net.http.HttpClient;
 import java.net.http.HttpRequest;
 import java.net.http.HttpResponse;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
 
 /**
  * Send the data to model container and get the prediction
@@ -37,34 +43,62 @@ public class ModelPredictor {
         }
     }
 
-    public void predict(Set<Match> matchSet) {
+    public Set<MatchPrediction> predict(Set<Match> matchSet) {
 
         logger.info("Requesting model with data {}", matchSet);
 
-        // todo
-        // there are 4 matches, use for loop to make several requests to get the prediction
-        // the prediction will be in numeric format, and the number is the winrate for the home
-        // hence, 4 matches, 4 winrates, print the outcome to the endpoint "predict"
+        RestTemplate template = new RestTemplate();
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_JSON);
 
-        HttpRequest request = HttpRequest.newBuilder()
-                // this uri should be read from docker, env
-                .uri(address)
-                .header("Content-Type", "application/json")
-                .POST(HttpRequest.BodyPublishers.ofString(
-                        preparedDataForModel.toString()
-                ))
-                .build();
+        ObjectMapper objectMapper = new ObjectMapper();
 
-        try {
-            HttpResponse<String> response = HttpClient.newBuilder().build()
-                    .send(request, HttpResponse.BodyHandlers.ofString());
+        Set<MatchPrediction> matchPredictions = new HashSet<>();
 
-            // update the web
-            System.out.println(response.body());
-        } catch (IOException | InterruptedException e) {
-            logger.info("exception occurred");
-            throw new RuntimeException(e);
+        for (Match per : matchSet) {
+
+            Optional<Bookmaker> optionalBookmaker = per.getBookmakers().stream().findAny();
+
+            if (optionalBookmaker.isEmpty()) {
+                continue;
+            }
+
+            Bookmaker oneBookmaker = optionalBookmaker.get();
+
+            Book book = new Book();
+            book.setHomeProbability(oneBookmaker.getHomeProbability());
+            book.setDrawProbability(oneBookmaker.getDrawProbability());
+            book.setAwayProbability(oneBookmaker.getAwayProbability());
+
+            String json = null;
+            try {
+                json = objectMapper.writeValueAsString(book);
+            } catch (JsonProcessingException e) {
+                throw new RuntimeException(e);
+            }
+
+            HttpEntity<String> entity = new HttpEntity<>(json, headers);
+            var response = template.postForObject(address, entity, String.class);
+
+
+            System.out.println("=========One prediction book start============");
+            System.out.println(oneBookmaker.getHomeTeam());
+            System.out.println(oneBookmaker.getAwayTeam());
+            System.out.println(oneBookmaker.getMatchTime());
+            Float homeWinrate = Float.parseFloat(response);
+            System.out.println(response);
+            System.out.println("=========One prediction book end============");
+
+            MatchPrediction pred = new MatchPrediction();
+            pred.setHomeTeam(oneBookmaker.getHomeTeam());
+            pred.setAwayTeam(oneBookmaker.getAwayTeam());
+            pred.setMatchTime(oneBookmaker.getMatchTime());
+            pred.setWinrate(homeWinrate);
+
+            matchPredictions.add(pred);
         }
 
+
+        return matchPredictions;
     }
 }
